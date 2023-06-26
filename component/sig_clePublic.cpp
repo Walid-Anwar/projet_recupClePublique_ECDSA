@@ -43,7 +43,7 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         BN_free(s);
         return false;
     }
-    if (ECDSA_SIG_recover_key(publicKey, signature, (const unsigned char*)nullptr) != 1) {
+    if (ECDSA_do_recover_key(publicKey, signature) != 1) {
         std::cerr << "Erreur lors de la récupération de la clé publique à partir de la signature." << std::endl;
         EC_GROUP_free((EC_GROUP*)group);
         EC_KEY_free(publicKey);
@@ -76,8 +76,7 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
     return true;
 }
 
-int main()
-{
+int main() {
     std::string signatureHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
     std::string publicKeyPointHex;
 

@@ -115,8 +115,6 @@ print("Cle public : ")
 print(macle.getPubKey())
 ```
 
-Cela vérifie que la signature générée a la bonne longueur et que des exceptions sont levées lorsqu'une clé privée invalide ou un message vide sont utilisés.
-
 ---
 
 **Fin de la spécification de la Classe ECDSAPubKey.**

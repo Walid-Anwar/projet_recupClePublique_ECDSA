@@ -12,6 +12,7 @@ const char* getVersion() {
 	return version;
 }
 
+using namespace std;
 class ECDSAPubKey{
 
 public:
@@ -123,7 +124,7 @@ public:
 
             publicKeyPointHex = publicKeyPointHexChar;
             return true;
-        }
+        };
 
 }
 

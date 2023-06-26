@@ -14,15 +14,23 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         return false;
     }
 
+    std::cerr << "Chargement de la courbe elliptique : OK" << std::endl;
     // Convertir la signature hexadécimale en BIGNUM r et s
     BIGNUM* r = BN_new();
     BIGNUM* s = BN_new();
     BN_hex2bn(&r, signatureHex.substr(0, 64).c_str());
     BN_hex2bn(&s, signatureHex.substr(64, 64).c_str());
 
+    std::cerr << "Convertissement de HEXA à BIGUM : OK" << std::endl;
+
+
     // Créer une structure ECDSA_SIG à partir des composantes r et s
     ECDSA_SIG* signature = ECDSA_SIG_new();
     ECDSA_SIG_set0(signature, r, s);
+
+
+    std::cerr << "Création d'une structure ECDSA_SIG à partir des composantes r et s: OK" << std::endl;
+
 
     // Récupérer la clé publique à partir de la signature
     EC_KEY* publicKey = EC_KEY_new();
@@ -34,6 +42,9 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         BN_free(s);
         return false;
     }
+
+    std::cerr << "Récupération des composants à partir de la signature : OK" << std::endl;
+
     if (EC_KEY_set_group(publicKey, group) != 1) {
         std::cerr << "Erreur lors de l'association de la courbe elliptique à la clé." << std::endl;
         EC_GROUP_free((EC_GROUP*)group);
@@ -43,6 +54,8 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         BN_free(s);
         return false;
     }
+
+    std::cerr << "Association courbe : OK" << std::endl;
 
     // Récupérer la clé publique à partir de la signature
     EC_POINT* publicKeyPoint = EC_POINT_new(group);
@@ -106,6 +119,10 @@ int main()
 {
     std::string signatureHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
     std::string publicKeyPointHex;
+
+    std::cout << "Début d'éxecution : " << std::endl;
+    std::cout << "Signature en hexa : " << signatureHex << std::endl;
+
 
     if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
         std::cout << "Clé publique : " << publicKeyPointHex << std::endl;

@@ -5,8 +5,7 @@
 #include <openssl/err.h>
 #include <openssl/bn.h>
 
-bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string& publicKeyHex)
-
+bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string& publicKeyPointHex)
 {
     // Charger la courbe elliptique utilisée pour la clé
     const EC_GROUP* group = EC_GROUP_new_by_curve_name(NID_secp256k1);
@@ -44,7 +43,7 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         BN_free(s);
         return false;
     }
-    if (ECDSA_recover_key(publicKey, signature, (const unsigned char*)nullptr, nullptr) != 1) {
+    if (ECDSA_SIG_recover_key(publicKey, signature, (const unsigned char*)nullptr) != 1) {
         std::cerr << "Erreur lors de la récupération de la clé publique à partir de la signature." << std::endl;
         EC_GROUP_free((EC_GROUP*)group);
         EC_KEY_free(publicKey);
@@ -77,14 +76,15 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
     return true;
 }
 
-int main(){
-std::string signatureHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
-std::string publicKeyPointHex;
+int main()
+{
+    std::string signatureHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
+    std::string publicKeyPointHex;
 
-if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
-    std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
-return 0;
-}
+    if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
+        std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
+        return 0;
+    }
 
-
+    return 1;
 }

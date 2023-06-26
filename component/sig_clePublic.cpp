@@ -21,15 +21,11 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
     BN_hex2bn(&r, signatureHex.substr(0, 64).c_str());
     BN_hex2bn(&s, signatureHex.substr(64, 64).c_str());
 
-    std::cerr << "Convertissement de HEXA à BIGUM : OK" << std::endl;
-
-
     // Créer une structure ECDSA_SIG à partir des composantes r et s
     ECDSA_SIG* signature = ECDSA_SIG_new();
     ECDSA_SIG_set0(signature, r, s);
 
 
-    std::cerr << "Création d'une structure ECDSA_SIG à partir des composantes r et s: OK" << std::endl;
 
 
     // Récupérer la clé publique à partir de la signature
@@ -43,7 +39,6 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         return false;
     }
 
-    std::cerr << "Récupération des composants à partir de la signature : OK" << std::endl;
 
     if (EC_KEY_set_group(publicKey, group) != 1) {
         std::cerr << "Erreur lors de l'association de la courbe elliptique à la clé." << std::endl;
@@ -55,7 +50,6 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         return false;
     }
 
-    std::cerr << "Association courbe : OK" << std::endl;
 
     // Récupérer la clé publique à partir de la signature
     EC_POINT* publicKeyPoint = EC_POINT_new(group);
@@ -68,7 +62,6 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         BN_free(s);
         return false;
     }
-    std::cerr << "Récup clé publique : OK" << std::endl;
 
 
     if (EC_POINT_mul(group, publicKeyPoint, r, nullptr, nullptr, nullptr) != 1) {
@@ -105,12 +98,7 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         return false;
     }
 
-    std::cerr << "Convertion clé public en hexa : OK" << std::endl;
-
     publicKeyPointHex = publicKeyPointHexChar;
-
-    std::cerr << "Clé récup : " <<publicKeyPointHex<< std::endl;
-
     return true;
 }
 

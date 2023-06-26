@@ -1,4 +1,4 @@
-# Spécification du composant publicKeyECDSA
+# Spécification du composant ECDSAPubKey
 
 **Titre :** Spécification du composant de récupération de la clé publique d'une signature ECDSA
 
@@ -16,27 +16,27 @@ Une signature ECDSA (Elliptic Curve Digital Signature Algorithm) est une méthod
 
 **Contexte :**
 
-La classe publicKeyECDSA est une implémentation en C++ de l'algorithme de récupération de la clé publique d'une signature ECDSA. Elle utilise la bibliothèque OpenSSL, une bibliothèque open-source C pour la cryptographie, qui implémente divers algorithmes de chiffrement, de déchiffrement, et de signature numérique.
+La classe ECDSAPubKey est une implémentation en C++ de l'algorithme de récupération de la clé publique d'une signature ECDSA. Elle utilise la bibliothèque OpenSSL, une bibliothèque open-source C pour la cryptographie, qui implémente divers algorithmes de chiffrement, de déchiffrement, et de signature numérique.
 
 **Schéma bloc incluant les composants connexes**
 
 ```
-[Application] --> [publicKeyECDSA Class] --> [OpenSSL Library]
+[Application] --> [ECDSAPubKey Class] --> [OpenSSL Library]
 ```
 
 **Interface et interaction avec chaque autre composant :**
 
-La classe publicKeyECDSA fournit une interface vers la bibliothèque OpenSSL. Elle utilise les classes et fonctions fournies par OpenSSL pour récuperer la clé publiaue des signatures ECDSA.
+La classe ECDSAPubKey fournit une interface vers la bibliothèque OpenSSL. Elle utilise les classes et fonctions fournies par OpenSSL pour récuperer la clé publiaue des signatures ECDSA.
 
 **Résumé :**
 
 ```cpp
-class PublicKeyECDSA {
+class ECDSAPubKey {
 public:
-    PublicKeyECDSA();
-    ~PublicKeyECDSA();
-    void Initialize(const std::string& hexPrivateKey);
-    std::string Sign(const std::string& message);
+    ECDSAPubKey();
+    ~ECDSAPubKey();
+    void initialize(const std::string& signature);
+    std::string getPubKey();
 };
 ```
 ---
@@ -45,7 +45,7 @@ public:
 
 ---
 
-Pour utiliser le composant publicKeyECDSA, vous devez d'abord cloner le dépôt et récupérer les sous-modules nécessaires.
+Pour utiliser le composant ECDSAPubKey, vous devez d'abord cloner le dépôt et récupérer les sous-modules nécessaires.
 
 **Clonage du dépôt et récupération des sous-modules :**
 
@@ -62,7 +62,7 @@ sudo apt-get install libssl-dev
 
 **Compilation :**
 
-Naviguez jusqu'au sous-répertoire `component` et compilez le code.
+Naviguez jusqu'au sous-répertoire `component` et compilez le code à l'aide du makefile.
 
 ```bash
 cd component 
@@ -71,30 +71,25 @@ make
 
 **Utilisation python :**
 
-Pour utiliser le composant PublicKeyECDSA, vous devez importer le module dans votre script Python.
+Pour utiliser le composant ECDSAPubKey, vous devez importer le module dans votre script Python.
 
 ```python
-import composant_PublicKeyECDSA
+import sig_clePublic
 
 # Créez une instance de la classe ECDSASignature
-signer = composant_PublicKeyECDSA.PublicKeyECDSA()
+macle = sig_clePublic.ECDSAPubKey()
 
-# Initialisez l'instance avec votre clé privée
-signer.Initialize("YOUR_PRIVATE_KEY")
+# Initialisez l'instance avec votre signature
+macle.Initialize("YOUR_SIGN")
 
-# Signez un message
-signature = signer.Sign("YOUR_MESSAGE")
+# Récuperer la clé public
+cle = macle.getPubKey()
 
 # Affichez la signature
-print(signature)
+print(cle)
 ```
 Ainsi, vous pouvez utiliser le composant ECDSASignature pour signer des messages à l'aide de l'algorithme ECDSA.
 
-
-
-**Cas d’erreurs :**
-
-Si une clé privée invalide est fournie à la méthode `Initialize`, Crypto++ lancera une exception lors du chargement de la clé. De plus, si un message vide est passé à la méthode `Sign`, une exception sera également levée.
 
 ---
 
@@ -102,55 +97,26 @@ Si une clé privée invalide est fournie à la méthode `Initialize`, Crypto++ l
 
 **Plan de test :**
 
-Nous testerons les méthodes `Initialize` et `Sign` de la classe `ECDSASignature` en utilisant des messages et des clés privées connus, et nous vérifierons si la signature générée est correcte.
-Nous allons testé aussi les cas où la clé privée est incorrecte ou le message est vide. Ces deux cas de figure devront lancer une exception.
-
+Nous testerons les méthodes `getPubKey` de la classe `ECDSASignature` en utilisant une signature en dur.
+.
 **Programme de test :**
 
 ```python
-import composant_ECDSASignature
+import sig_clePublic
 
-# Remplacez ceci par une clé privée valide
-known_private_key = "4b8e29b9b0dddd58a709edba7d6df6c07ebdaf5653e325114bc5318c238f87f0"
-known_message = "Hello, World!"
+# Créez une instance de la classe ECDSAPubKey
+macle = sig_clePublic.ECDSAPubKey()
 
-# Test de signature
-signer = composant_ECDSASignature.ECDSASignature()
-signer.Initialize(known_private_key)
-signature = signer.Sign(known_message)
+# Initialisez avec une clé privée
+macle.initialize("371ADD1C2C324A1278F2412D034005A146D2FA370C6B3C985B133D5C4D97A062EA7FDB202C01DAF04043099544354763290572416B8E22B6B8FF7ED101F6A3C7")
 
-print("Signature :")
-print(signature)
-
-# Vérification de la longueur de la signature
-if len(signature) == 128:
-    print("Signature test passed.")
-else:
-    print("Signature test failed: Signature does not have the expected length.")
-
-# Test avec une clé privée invalide
-try:
-    signer = composant_ECDSASignature.ECDSASignature()
-    signer.Initialize("INVALID_PRIVATE_KEY")
-except Exception:
-    print("Private key test passed: Exception correctly thrown for invalid private key.")
-else:
-    print("Private key test failed: No exception thrown for invalid private key.")
-
-# Test avec un message vide
-try:
-    signer = composant_ECDSASignature.ECDSASignature()
-    signer.Initialize(known_private_key)
-    signature = signer.Sign("")
-except Exception:
-    print("Empty message test passed: Exception correctly thrown for empty message.")
-else:
-    print("Empty message test failed: No exception thrown for empty message.")
-
+# Récupérez la clé publique
+print("Cle public : ")
+print(macle.getPubKey())
 ```
 
 Cela vérifie que la signature générée a la bonne longueur et que des exceptions sont levées lorsqu'une clé privée invalide ou un message vide sont utilisés.
 
 ---
 
-**Fin de la spécification de la Classe publicKeyECDSA.**
+**Fin de la spécification de la Classe ECDSAPubKey.**

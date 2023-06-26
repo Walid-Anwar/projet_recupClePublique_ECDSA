@@ -68,6 +68,9 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         BN_free(s);
         return false;
     }
+    std::cerr << "Récup clé publique : OK" << std::endl;
+
+
     if (EC_POINT_mul(group, publicKeyPoint, r, nullptr, nullptr, nullptr) != 1) {
         std::cerr << "Erreur lors de la multiplication du point." << std::endl;
         EC_GROUP_free((EC_GROUP*)group);
@@ -101,8 +104,15 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         EC_POINT_free(publicKeyPoint);
         return false;
     }
+
+    std::cerr << "Convertion clé public en hexa : OK" << std::endl;
+
     publicKeyPointHex = publicKeyPointHexChar;
 
+    std::cerr << "Clé récup : " <<publicKeyPointHex<< std::endl;
+
+
+    std::cerr << "Début libération de la mémoire : OK" << std::endl;
     // Libérer la mémoire
     EC_GROUP_free((EC_GROUP*)group);
     EC_KEY_free(publicKey);
@@ -111,6 +121,9 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
     BN_free(s);
     EC_POINT_free(publicKeyPoint);
     OPENSSL_free(publicKeyPointHexChar);
+
+    std::cerr << "Fin libération de la mémoire : OK" << std::endl;
+
 
     return true;
 }

@@ -126,15 +126,7 @@ public:
             return true;
         };
 
-}
-
-int main()
-{
-    
-
-    return 1;
-}
-
+};
 
 namespace py = pybind11;
 

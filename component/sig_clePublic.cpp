@@ -117,17 +117,16 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
 int main()
 {
     std::string publicKeyHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
-    std::string signatureHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
+    std::string signatureHex = "371ADD1C2C324A1278F2412D034005A146D2FA370C6B3C985B133D5C4D97A062EA7FDB202C01DAF04043099544354763290572416B8E22B6B8FF7ED101F6A3C7";
     std::string publicKeyPointHex;
 
     std::cout << "Début d'éxecution : " << std::endl;
-    std::cout << "Signature en hexa : " << signatureHex << std::endl;
-
 
     if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
         std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
+
         if(publicKeyPointHex==publicKeyHex){
-            std::cout << "Clé vraie : " << std::endl;
+            std::cout << "Clé vraie " << std::endl;
         }
         return 0;
     }

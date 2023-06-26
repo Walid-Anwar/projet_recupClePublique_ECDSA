@@ -5,7 +5,8 @@
 #include <openssl/err.h>
 #include <openssl/bn.h>
 
-bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string& publicKeyPointHex)
+bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string& publicKeyHex)
+
 {
     // Charger la courbe elliptique utilisée pour la clé
     const EC_GROUP* group = EC_GROUP_new_by_curve_name(NID_secp256k1);
@@ -43,7 +44,7 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         BN_free(s);
         return false;
     }
-    if (EC_KEY_recover_public_key(publicKey, signature, (const unsigned char*)nullptr) != 1) {
+    if (ECDSA_recover_key(publicKey, signature, (const unsigned char*)nullptr, nullptr) != 1) {
         std::cerr << "Erreur lors de la récupération de la clé publique à partir de la signature." << std::endl;
         EC_GROUP_free((EC_GROUP*)group);
         EC_KEY_free(publicKey);
@@ -54,7 +55,7 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
     }
 
     // Convertir la clé publique en format hexadécimal
-    EC_POINT* publicKeyPoint = EC_KEY_get0_public_key(publicKey);
+    const EC_POINT* publicKeyPoint = EC_KEY_get0_public_key(publicKey);
     BIGNUM* x = BN_new();
     BIGNUM* y = BN_new();
     EC_POINT_get_affine_coordinates_GFp(group, publicKeyPoint, x, y, nullptr);
@@ -82,7 +83,6 @@ std::string publicKeyPointHex;
 
 if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
     std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
-
 return 0;
 }
 

@@ -131,9 +131,9 @@ public:
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(cle_component,greetings)
+PYBIND11_MODULE(sig_clePublic,greetings)
 {
-  greetings.doc() = "greeting_object 1.0";
+  greetings.doc() = "sig_clePublic";
   greetings.def("getVersion", &getVersion, "a function returning the version");
   
     py::class_<ECDSAPubKey>(greetings, "ECDSAPubKey", py::dynamic_attr())

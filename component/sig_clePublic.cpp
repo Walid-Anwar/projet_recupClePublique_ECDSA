@@ -18,7 +18,7 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
     BIGNUM* r = BN_new();
     BIGNUM* s = BN_new();
     BN_hex2bn(&r, signatureHex.substr(0, 64).c_str());
-    BN_hex2bn(&s, signatureHex.substr(64, 64).c_str());
+    BN_hex2bn(&s, signatureHex.substr(64, 128).c_str());
 
     // Créer une structure ECDSA_SIG à partir des composantes r et s
     ECDSA_SIG* signature = ECDSA_SIG_new();
@@ -110,9 +110,9 @@ int main()
     std::cout << "Début d'éxecution : " << std::endl;
 
     if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
-        std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
+        std::cout << "Clé publique extraite : " << publicKeyPointHex << std::endl;
         std::cout << "Clé vraie " << publicKeyHex<< std::endl;
-        
+
         return 0;
     }
 

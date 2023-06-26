@@ -111,25 +111,12 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
 
     std::cerr << "Clé récup : " <<publicKeyPointHex<< std::endl;
 
-
-    std::cerr << "Début libération de la mémoire : OK" << std::endl;
-    // Libérer la mémoire
-    EC_GROUP_free((EC_GROUP*)group);
-    EC_KEY_free(publicKey);
-    ECDSA_SIG_free(signature);
-    BN_free(r);
-    BN_free(s);
-    EC_POINT_free(publicKeyPoint);
-    OPENSSL_free(publicKeyPointHexChar);
-
-    std::cerr << "Fin libération de la mémoire : OK" << std::endl;
-
-
     return true;
 }
 
 int main()
 {
+    std::string publicKeyHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
     std::string signatureHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
     std::string publicKeyPointHex;
 
@@ -139,6 +126,9 @@ int main()
 
     if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
         std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
+        if(publicKeyPointHex==publicKeyHex){
+            std::cout << "Clé vraie : " << std::endl;
+        }
         return 0;
     }
 

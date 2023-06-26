@@ -101,3 +101,16 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
 
     return true;
 }
+
+int main()
+{
+    std::string signatureHex = "04F2CE1E40BEFBEBAF4045F1A6D126B7B949E7D5ADEA33F84A09A904093456F4FD504B1F70755BE4CEF27625B1E6B893E05FFEB361F2971FDA1D6BE5E730A74303";
+    std::string publicKeyPointHex;
+
+    if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
+        std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
+        return 0;
+    }
+
+    return 1;
+}

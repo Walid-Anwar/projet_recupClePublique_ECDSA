@@ -28,6 +28,7 @@ public:
         if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
             return publicKeyPointHex;
         }
+        return "";
     }
 
     private :

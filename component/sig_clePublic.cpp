@@ -14,7 +14,6 @@ bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string&
         return false;
     }
 
-    std::cerr << "Chargement de la courbe elliptique : OK" << std::endl;
     // Convertir la signature hexadécimale en BIGNUM r et s
     BIGNUM* r = BN_new();
     BIGNUM* s = BN_new();
@@ -112,10 +111,8 @@ int main()
 
     if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
         std::cout << "Clé publique : " << publicKeyPointHex << std::endl;
-
-        if(publicKeyPointHex==publicKeyHex){
-            std::cout << "Clé vraie " << std::endl;
-        }
+        std::cout << "Clé vraie " << publicKeyHex<< std::endl;
+        
         return 0;
     }
 

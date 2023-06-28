@@ -89,17 +89,7 @@ public:
             }
 
 
-            if (EC_POINT_mul(group, publicKeyPoint, r, nullptr, nullptr, nullptr) != 1) {
-                std::cerr << "Erreur lors de la multiplication du point." << std::endl;
-                EC_GROUP_free((EC_GROUP*)group);
-                EC_KEY_free(publicKey);
-                ECDSA_SIG_free(signature);
-                BN_free(r);
-                BN_free(s);
-                EC_POINT_free(publicKeyPoint);
-                return false;
-            }
-            if (EC_POINT_mul(group, publicKeyPoint, nullptr, publicKeyPoint, s, nullptr) != 1) {
+            if (EC_POINT_mul(group, publicKeyPoint, r, publicKeyPoint, s, nullptr) != 1) {
                 std::cerr << "Erreur lors de la multiplication du point." << std::endl;
                 EC_GROUP_free((EC_GROUP*)group);
                 EC_KEY_free(publicKey);

@@ -15,9 +15,8 @@
 
 Une signature ECDSA (Elliptic Curve Digital Signature Algorithm) est une méthode de cryptographie utilisée pour prouver l'authenticité et l'intégrité d'un message numérique. C'est une empreinte digitale numérique qui transporte une preuve de l'original. Elle atteste donc qu'un message provient d'une source authentique et qu'il n'a pas été altéré pendant la transmission. La signature ECDSA utilise une paire de clés, une clé privée et une clé publique, qui sont générées mathématiquement. La clé privée est utilisée pour signer le message, tandis que la clé publique est utilisée pour vérifier la signature. Grâce aux propriétés des courbes elliptiques, l'algorithme ECDSA offre une sécurité élevée avec des clés plus courtes par rapport à d'autres algorithmes de signature numérique.
 
-**Contexte :**
-
 La classe ECDSAPubKey est une implémentation en C++ de l'algorithme de récupération de la clé publique d'une signature ECDSA. Elle utilise la bibliothèque OpenSSL, une bibliothèque open-source C pour la cryptographie, qui implémente divers algorithmes de chiffrement, de déchiffrement, et de signature numérique.
+
 
 **Schéma bloc incluant les composants connexes**
 
@@ -36,7 +35,7 @@ class ECDSAPubKey {
 public:
     ECDSAPubKey();
     ~ECDSAPubKey();
-    void initialize(const std::string& signature);
+    void initialize(const std::string& signature,const std::string& message);
     std::string getPubKey();
 };
 ```
@@ -54,7 +53,7 @@ import sig_clePublic
 macle = sig_clePublic.ECDSAPubKey()
 
 # Initialisez l'instance avec votre signature
-macle.Initialize("YOUR_SIGN")
+macle.initialize("YOUR_SIGN", "YOUR_MESSAGE")
 
 # Récuperer la clé public
 cle = macle.getPubKey()
@@ -89,17 +88,16 @@ print("Cle public : ")
 print(macle.getPubKey())
 ```
 
+---
+
 **ANNEXE**
 
----
 
 **Compilation du composant**
 
 ---
 
 Pour utiliser le composant ECDSAPubKey, vous devez d'abord cloner le dépôt et récupérer les sous-modules nécessaires.
-
-**Clonage du dépôt et récupération des sous-modules :**
 
 ```bash
 cd component
@@ -111,8 +109,6 @@ Vous devez aussi installer les fichiers d'en-tête nécessaires pour utiliser Op
 ```bash
 sudo apt-get install libssl-dev
 ```
-
-**Compilation :**
 
 Naviguez jusqu'au sous-répertoire `component` et compilez le code à l'aide du makefile.
 

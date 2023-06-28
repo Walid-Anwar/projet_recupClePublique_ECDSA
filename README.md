@@ -7,12 +7,13 @@
 **Historique des versions :**
 
 - 1.0 (25 Juin 2023) - Première version
+- 2.0 (28 Juin 2023) - Deuxième version
 
 ---
 
 **Description :**
 
-Une signature ECDSA (Elliptic Curve Digital Signature Algorithm) est une méthode de cryptographie utilisée pour prouver l'authenticité et l'intégrité d'un message numérique. C'est comme une "empreinte digitale" numérique qui atteste qu'un message provient d'une source légitime et qu'il n'a pas été altéré pendant la transmission. La signature ECDSA utilise une paire de clés, une clé privée et une clé publique, qui sont générées mathématiquement. La clé privée est utilisée pour signer le message, tandis que la clé publique est utilisée pour vérifier la signature. Grâce aux propriétés des courbes elliptiques, l'algorithme ECDSA offre une sécurité élevée avec des clés plus courtes par rapport à d'autres algorithmes de signature numérique.
+Une signature ECDSA (Elliptic Curve Digital Signature Algorithm) est une méthode de cryptographie utilisée pour prouver l'authenticité et l'intégrité d'un message numérique. C'est une empreinte digitale numérique qui transporte une preuve de l'original. Elle atteste donc qu'un message provient d'une source authentique et qu'il n'a pas été altéré pendant la transmission. La signature ECDSA utilise une paire de clés, une clé privée et une clé publique, qui sont générées mathématiquement. La clé privée est utilisée pour signer le message, tandis que la clé publique est utilisée pour vérifier la signature. Grâce aux propriétés des courbes elliptiques, l'algorithme ECDSA offre une sécurité élevée avec des clés plus courtes par rapport à d'autres algorithmes de signature numérique.
 
 **Contexte :**
 
@@ -26,7 +27,7 @@ La classe ECDSAPubKey est une implémentation en C++ de l'algorithme de récupé
 
 **Interface et interaction avec chaque autre composant :**
 
-La classe ECDSAPubKey fournit une interface vers la bibliothèque OpenSSL. Elle utilise les classes et fonctions fournies par OpenSSL pour récuperer la clé publiaue des signatures ECDSA.
+La classe ECDSAPubKey fournit une interface pour récuperer la clé publique des signatures ECDSA.
 
 **Résumé :**
 
@@ -41,33 +42,6 @@ public:
 ```
 ---
 
-**Utilisation du composant**
-
----
-
-Pour utiliser le composant ECDSAPubKey, vous devez d'abord cloner le dépôt et récupérer les sous-modules nécessaires.
-
-**Clonage du dépôt et récupération des sous-modules :**
-
-```bash
-cd component
-git submodule init
-git submodule update
-```
-Vous devez aussi installer les fichiers d'en-tête nécessaires pour utiliser OpenSSL en utilisant la commande suivante :
-
-```bash
-sudo apt-get install libssl-dev
-```
-
-**Compilation :**
-
-Naviguez jusqu'au sous-répertoire `component` et compilez le code à l'aide du makefile.
-
-```bash
-cd component 
-make
-```
 
 **Utilisation python :**
 
@@ -115,6 +89,36 @@ print("Cle public : ")
 print(macle.getPubKey())
 ```
 
+**ANNEXE**
+
 ---
+
+**Compilation du composant**
+
+---
+
+Pour utiliser le composant ECDSAPubKey, vous devez d'abord cloner le dépôt et récupérer les sous-modules nécessaires.
+
+**Clonage du dépôt et récupération des sous-modules :**
+
+```bash
+cd component
+git submodule init
+git submodule update
+```
+Vous devez aussi installer les fichiers d'en-tête nécessaires pour utiliser OpenSSL en utilisant la commande suivante :
+
+```bash
+sudo apt-get install libssl-dev
+```
+
+**Compilation :**
+
+Naviguez jusqu'au sous-répertoire `component` et compilez le code à l'aide du makefile.
+
+```bash
+cd component 
+make
+```
 
 **Fin de la spécification de la Classe ECDSAPubKey.**

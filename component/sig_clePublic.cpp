@@ -5,6 +5,7 @@
 #include <openssl/obj_mac.h>
 #include <openssl/err.h>
 #include <openssl/bn.h>
+#include <openssl/sha.h>
 
 char version[]="1.0";
 
@@ -18,14 +19,15 @@ class ECDSAPubKey{
 public:
         ECDSAPubKey() {}
         ~ECDSAPubKey() {}
-    
-    void initialize(const std::string& signature) {
+
+    void initialize(const std::string& signature, const std::string& message) {
             signatureHex = signature;
+            messageHex = message;
         }
-    
+
     string getPubKey(){
         std::string publicKeyPointHex;
-        if (extractPublicKeyFromSignature(signatureHex, publicKeyPointHex)) {
+        if (extractPublicKeyFromSignature(signatureHex, messageHex, publicKeyPointHex)) {
             return publicKeyPointHex;
         }
         return "";
@@ -33,30 +35,38 @@ public:
 
     private :
         std::string signatureHex;
+        std::string messageHex;
 
-        bool extractPublicKeyFromSignature(const std::string& signatureHex, std::string& publicKeyPointHex)
-            {
-            // Charger la courbe elliptique utilisée pour la clé
+        bool extractPublicKeyFromSignature(const std::string& signatureHex, const std::string& messageHex, std::string& publicKeyPointHex)
+        {
+            // Convert messageHex to a binary hash
+            unsigned char hash[SHA256_DIGEST_LENGTH];
+            SHA256_CTX sha256;
+            SHA256_Init(&sha256);
+            SHA256_Update(&sha256, messageHex.c_str(), messageHex.size());
+            SHA256_Final(hash, &sha256);
+
+            // Load elliptic curve used for the key
             const EC_GROUP* group = EC_GROUP_new_by_curve_name(NID_secp256k1);
             if (group == nullptr) {
-                std::cerr << "Erreur lors du chargement de la courbe elliptique." << std::endl;
+                std::cerr << "Error loading elliptic curve." << std::endl;
                 return false;
             }
 
-            // Convertir la signature hexadécimale en BIGNUM r et s
+            // Convert hex signature to BIGNUM r and s
             BIGNUM* r = BN_new();
             BIGNUM* s = BN_new();
             BN_hex2bn(&r, signatureHex.substr(0, 64).c_str());
             BN_hex2bn(&s, signatureHex.substr(64, 128).c_str());
 
-            // Créer une structure ECDSA_SIG à partir des composantes r et s
+            // Create ECDSA_SIG structure from r and s components
             ECDSA_SIG* signature = ECDSA_SIG_new();
             ECDSA_SIG_set0(signature, r, s);
 
-            // Récupérer la clé publique à partir de la signature
+            // Recover the public key from the signature
             EC_KEY* publicKey = EC_KEY_new();
             if (publicKey == nullptr) {
-                std::cerr << "Erreur lors de la création de l'objet EC_KEY." << std::endl;
+                std::cerr << "Error creating EC_KEY object." << std::endl;
                 EC_GROUP_free((EC_GROUP*)group);
                 ECDSA_SIG_free(signature);
                 BN_free(r);
@@ -64,22 +74,8 @@ public:
                 return false;
             }
 
-
-            if (EC_KEY_set_group(publicKey, group) != 1) {
-                std::cerr << "Erreur lors de l'association de la courbe elliptique à la clé." << std::endl;
-                EC_GROUP_free((EC_GROUP*)group);
-                EC_KEY_free(publicKey);
-                ECDSA_SIG_free(signature);
-                BN_free(r);
-                BN_free(s);
-                return false;
-            }
-
-
-            // Récupérer la clé publique à partir de la signature
-            EC_POINT* publicKeyPoint = EC_POINT_new(group);
-            if (publicKeyPoint == nullptr) {
-                std::cerr << "Erreur lors de la création de l'objet EC_POINT." << std::endl;
+            if (ECDSA_do_verify(hash, SHA256_DIGEST_LENGTH, signature, publicKey) != 1) {
+                std::cerr << "Error recovering the public key." << std::endl;
                 EC_GROUP_free((EC_GROUP*)group);
                 EC_KEY_free(publicKey);
                 ECDSA_SIG_free(signature);
@@ -88,28 +84,15 @@ public:
                 return false;
             }
 
-
-            if (EC_POINT_mul(group, publicKeyPoint, r, publicKeyPoint, s, nullptr) != 1) {
-                std::cerr << "Erreur lors de la multiplication du point." << std::endl;
-                EC_GROUP_free((EC_GROUP*)group);
-                EC_KEY_free(publicKey);
-                ECDSA_SIG_free(signature);
-                BN_free(r);
-                BN_free(s);
-                EC_POINT_free(publicKeyPoint);
-                return false;
-            }
-
-            // Convertir la clé publique en format hexadécimal
-            char* publicKeyPointHexChar = EC_POINT_point2hex(group, publicKeyPoint, POINT_CONVERSION_UNCOMPRESSED, nullptr);
+            // Convert public key to hexadecimal format
+            char* publicKeyPointHexChar = EC_POINT_point2hex(group, EC_KEY_get0_public_key(publicKey), POINT_CONVERSION_UNCOMPRESSED, nullptr);
             if (publicKeyPointHexChar == nullptr) {
-                std::cerr << "Erreur lors de la conversion de la clé publique en format hexadécimal." << std::endl;
+                std::cerr << "Error converting public key to hexadecimal format." << std::endl;
                 EC_GROUP_free((EC_GROUP*)group);
                 EC_KEY_free(publicKey);
                 ECDSA_SIG_free(signature);
                 BN_free(r);
                 BN_free(s);
-                EC_POINT_free(publicKeyPoint);
                 return false;
             }
 
@@ -125,9 +108,9 @@ PYBIND11_MODULE(sig_clePublic,greetings)
 {
   greetings.doc() = "sig_clePublic";
   greetings.def("getVersion", &getVersion, "a function returning the version");
-  
+
     py::class_<ECDSAPubKey>(greetings, "ECDSAPubKey", py::dynamic_attr())
             .def(py::init<>())
-        .def("initialize", &ECDSAPubKey::initialize)
-        .def("getPubKey", &ECDSAPubKey::getPubKey);
+            .def("initialize", &ECDSAPubKey::initialize)
+            .def("getPubKey", &ECDSAPubKey::getPubKey);
 }

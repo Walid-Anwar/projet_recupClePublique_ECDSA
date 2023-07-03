@@ -5,7 +5,7 @@
 #include <botan/der_enc.h>
 #include <botan/oids.h>
 #include <botan/hash.h>
-#include <pybind11/pybind11.h>
+//#include <pybind11/pybind11.h>
 #include <string>
 
 char version[] = "1.0";

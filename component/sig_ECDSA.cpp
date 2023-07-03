@@ -1,73 +1,42 @@
 #include <botan/ecdsa.h>
-#include <botan/hex.h>
-#include <botan/pubkey.h>
 #include <botan/auto_rng.h>
+#include <botan/oid.h>
+#include <botan/hex.h>
 #include <botan/der_enc.h>
-#include <botan/oids.h>
-#include <botan/hash.h>
+#include <botan/pubkey.h>
+#include <botan/rsa.h>
+#include <botan/pkcs8.h>
+#include <botan/data_src.h>
+#include <botan/pipe.h>
 //#include <pybind11/pybind11.h>
 #include <string>
 
-char version[] = "1.0";
+using namespace std;
 
-const char *getVersion()
-{
-    return version;
-}
-
-class ECDSASignature
-{
-private:
-    Botan::ECDSA_PrivateKey *key;
-
+class ECDSASignature{
+    Botan::AutoSeeded_RNG rng;
+    Botan::ECDSA_PrivateKey* key;
 public:
-    ECDSASignature()
-    {
-        // Initialize RNG
-        Botan::AutoSeeded_RNG rng;
-
-        // Create a new EC key
-        key = new Botan::ECDSA_PrivateKey(rng, Botan::OID("secp256k1"));
+    ECDSASignature() {
+        key = new Botan::ECDSA_PrivateKey(rng, Botan::EC_Group("secp256k1"));
     }
 
-    ~ECDSASignature()
-    {
-        // Clean up
-        delete key;
+    void Initialize(const string& privateKey){
+        Botan::BigInt bigIntKey(privateKey);
+        key = new Botan::ECDSA_PrivateKey(rng, Botan::EC_Group("secp256k1"), bigIntKey);
     }
 
-    void Initialize(const std::string &privateKeyHex)
-    {
-        // Create the key from hex
-        Botan::BigInt bigIntKey = Botan::BigInt::decode(Botan::hex_decode(privateKeyHex));
-        key = new Botan::ECDSA_PrivateKey(Botan::DL_Group("secp256k1"), bigIntKey);
-    }
-
-    std::string Sign(const std::string &message)
-    {
-        if (message.empty())
-        {
-            throw std::runtime_error("Message cannot be empty.");
-        }
-
-        // Hash the message (SHA256)
-        std::unique_ptr<Botan::HashFunction> hash(Botan::HashFunction::create("SHA-256"));
-        hash->update(message);
-        Botan::secure_vector<uint8_t> hashOut = hash->final();
-
-        // Initialize RNG
-        Botan::AutoSeeded_RNG rng;
-
-        // Sign the hash
-        Botan::PK_Signer signer(*key, rng, "EMSA1(SHA-256)");
-        Botan::secure_vector<uint8_t> signature = signer.sign_message(hashOut, rng);
-
-        // Get the signature in hexadecimal
-        std::string signatureHex = Botan::hex_encode(signature);
-
-        return signatureHex;
+    string Sign(const string& msg){
+        Botan::PK_Signer signer(*key, "EMSA1(SHA-256)");
+        signer.update(reinterpret_cast<const uint8_t*>(msg.data()), msg.size());
+        std::vector<uint8_t> hashOut(signer.signature_length(), 0);
+        size_t signatureLen = signer.signature_length();
+        Botan::secure_vector<uint8_t> signature(hashOut.data(), hashOut.data() + hashOut.size());
+        return Botan::hex_encode(signature);
     }
 };
+
+
 /*
 namespace py = pybind11;
 

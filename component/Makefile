@@ -1,5 +1,5 @@
 CPPFLAGS += `python3-config --includes`
-CPPFLAGS += -I/home/walidanwar999/botan-2.18.2/build/include/botan
+CPPFLAGS += -I/home/walidanwar999/botan-2.18.2/build/include/
 LIBS=`python3-config --ldflags`
 LIBS += -lbotan-2
 

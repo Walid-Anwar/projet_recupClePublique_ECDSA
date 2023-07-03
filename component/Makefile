@@ -3,7 +3,7 @@ CPPFLAGS += /usr/local/include/botan-2
 LIBS=`python3-config --ldflags`
 LIBS += -lbotan-2
 
-COMPOSANT = sig-ECDSA
+COMPOSANT = sig_ECDSA
 LIBSO = ${COMPOSANT}.so
 LIBSO_OBJS = ${COMPOSANT}.o
 

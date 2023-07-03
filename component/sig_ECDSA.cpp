@@ -68,7 +68,7 @@ public:
         return signatureHex;
     }
 };
-
+/*
 namespace py = pybind11;
 
 PYBIND11_MODULE(projet_signature_ECDSA, module)
@@ -93,3 +93,4 @@ PyErr_SetString(PyExc_Exception, e.what());
 }
 });
 }
+*/

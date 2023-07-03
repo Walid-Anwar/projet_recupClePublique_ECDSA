@@ -1,6 +1,5 @@
 #include <botan/ecdsa.h>
 #include <botan/auto_rng.h>
-#include <botan/oid.h>
 #include <botan/hex.h>
 #include <botan/der_enc.h>
 #include <botan/pubkey.h>
@@ -8,7 +7,6 @@
 #include <botan/pkcs8.h>
 #include <botan/data_src.h>
 #include <botan/pipe.h>
-//#include <pybind11/pybind11.h>
 #include <string>
 
 using namespace std;
@@ -36,6 +34,8 @@ public:
     }
 };
 
+
+//#include <pybind11/pybind11.h>
 
 /*
 namespace py = pybind11;

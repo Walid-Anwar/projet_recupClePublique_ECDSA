@@ -17,6 +17,6 @@ $(LIBSO): $(LIBSO_OBJS)
 
 $(LIBSO_OBJS): ${COMPOSANT}.cpp
 	g++ -c ${COMPOSANT}.cpp -o ${COMPOSANT}.o $(CPPFLAGS) -fPIC
-g
+
 clean:
 	rm -f $(LIBSO) $(LIBSO_OBJS)

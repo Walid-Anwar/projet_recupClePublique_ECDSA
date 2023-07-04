@@ -4,7 +4,7 @@ CPPFLAGS += -I/home/walidanwar999/botan-2.18.2/build/include/
 LIBS=`python3-config --ldflags`
 LIBS += -lbotan-2
 
-COMPOSANT = projet_signature_ECDSA
+COMPOSANT = sig_ECDSA
 
 LIBSO = ${COMPOSANT}.so
 LIBSO_OBJS = ${COMPOSANT}.o
@@ -19,7 +19,7 @@ $(LIBSO_OBJS): ${COMPOSANT}.cpp
 
 test: $(LIBSO)
 	echo "Execution du test"
-	python3 test.py
+	python3 test_python.py
 
 clean:
 	rm -f $(LIBSO) $(LIBSO_OBJS)

@@ -7,8 +7,8 @@
 #include <botan/pkcs8.h>
 #include <botan/data_src.h>
 #include <botan/pipe.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+//#include <pybind11/pybind11.h>
+//#include <pybind11/stl.h>
 #include <string>
 
 using namespace std;
@@ -36,34 +36,28 @@ public:
     }
 };
 
+int main()
+{
+    ECDSASignature ecdsaSignature;
+    std::string message = "Hello, World!";
+    std::string signature = ecdsaSignature.Sign(message);
+
+    std::cout << "Signature: " << signature << std::endl;
+
+    return 0;
+}
 
 
-
+/*
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(projet_signature_ECDSA, module)
 {
 module.doc() = "projet_signature_ECDSA 1.0";
-module.def("getVersion", &getVersion, "a function returning the version");
 
 py::class_<ECDSASignature>(module, "ECDSASignature")
-.def(py::init<>())
-.def("Initialize", &ECDSASignature::Initialize)
-.def("Sign", &ECDSASignature::Sign)
-.def("__str__", [](const ECDSASignature &instance) {
-return instance.ToString();
-});
-
-// Translate C++ exceptions to Python exceptions
-py::register_exception_translator([](std::exception_ptr p) {
-try {
-if (p)
-std::rethrow_exception(p);
-} catch (const std::runtime_error &e) {
-PyErr_SetString(PyExc_RuntimeError, e.what());
-} catch (const std::exception &e) {
-PyErr_SetString(PyExc_Exception, e.what());
+.def(py::init<const std::string &>())
+.def("Sign", &ECDSASignature::Sign);
 }
-});
-}
+ */

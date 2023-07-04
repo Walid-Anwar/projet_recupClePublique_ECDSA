@@ -7,6 +7,7 @@
 #include <botan/pkcs8.h>
 #include <botan/data_src.h>
 #include <botan/pipe.h>
+#include <iostream>
 //#include <pybind11/pybind11.h>
 //#include <pybind11/stl.h>
 #include <string>

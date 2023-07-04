@@ -12,7 +12,7 @@ LIBSO_OBJS = ${COMPOSANT}.o
 all: $(LIBSO)
 
 $(LIBSO): $(LIBSO_OBJS)
-	g++ -shared $(LIBSO_OBJS) -o $(LIBSO) $(LIBS)
+	g++ -shared $(LIBSO_OBJS) -o $(LIBSO) $(LIBS) -Wl,--no-as-needed
 
 $(LIBSO_OBJS): ${COMPOSANT}.cpp
 	g++ -c ${COMPOSANT}.cpp -o ${COMPOSANT}.o $(CPPFLAGS) -fPIC
